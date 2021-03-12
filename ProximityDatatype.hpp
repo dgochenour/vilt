@@ -9,8 +9,8 @@ For more information, type 'rtiddsgen -help' at a command shell
 or consult the RTI Connext manual.
 */
 
-#ifndef ProximityDatatype_1543506997_hpp
-#define ProximityDatatype_1543506997_hpp
+#ifndef ProximityDatatype_1543507062_hpp
+#define ProximityDatatype_1543507062_hpp
 
 #include <iosfwd>
 
@@ -55,6 +55,8 @@ or consult the RTI Connext manual.
 #undef NDDSUSERDllExport
 #define NDDSUSERDllExport __declspec(dllexport)
 #endif
+
+static const std::string PROXIMITY_DATA_TOPIC_NAME = "Proximity Data Topic";
 
 static const uint32_t SENSOR_ID_MAX_LENGTH = 16;
 
@@ -196,5 +198,5 @@ namespace rti {
 #define NDDSUSERDllExport
 #endif
 
-#endif // ProximityDatatype_1543506997_hpp
+#endif // ProximityDatatype_1543507062_hpp
 

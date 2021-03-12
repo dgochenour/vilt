@@ -4,6 +4,7 @@
 // must display this notice unaltered.
 // This code contains trade secrets of Real-Time Innovations, Inc.
 
+const string PROXIMITY_DATA_TOPIC_NAME = "Proximity Data Topic";
 
 const unsigned long SENSOR_ID_MAX_LENGTH = 16;
 struct ProximityData {
