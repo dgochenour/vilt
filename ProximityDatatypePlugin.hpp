@@ -9,8 +9,8 @@ For more information, type 'rtiddsgen -help' at a command shell
 or consult the RTI Connext manual.
 */
 
-#ifndef ProximityDatatypePlugin_1543506997_h
-#define ProximityDatatypePlugin_1543506997_h
+#ifndef ProximityDatatypePlugin_1543507062_h
+#define ProximityDatatypePlugin_1543507062_h
 
 #include "ProximityDatatype.hpp"
 
@@ -250,5 +250,5 @@ ProximityDataPlugin_delete(struct PRESTypePlugin *);
 #define NDDSUSERDllExport
 #endif
 
-#endif /* ProximityDatatypePlugin_1543506997_h */
+#endif /* ProximityDatatypePlugin_1543507062_h */
 
