@@ -34,7 +34,7 @@ int subscriber_main(int domain_id, int sample_count)
     // Create a DomainParticipant with default Qos
     dds::domain::DomainParticipant participant(
             domain_id,
-            qos_provider.participant_qos("ProximityDatatype_Library::ProximityDatatype_Profile"));
+            qos_provider.participant_qos("System_Library::ParticipantBase"));
 
     // Create a Topic -- and automatically register the type
     dds::topic::Topic<ProximityData> topic(participant, PROXIMITY_DATA_TOPIC_NAME);
@@ -43,7 +43,31 @@ int subscriber_main(int domain_id, int sample_count)
     dds::sub::DataReader<ProximityData> reader(
             dds::sub::Subscriber(participant), 
             topic,
-            qos_provider.datareader_qos("ProximityDatatype_Library::ProximityDatatype_Profile"));
+            qos_provider.datareader_qos("Data_Library::StreamingData"));
+
+    // get the readers StatusCondition
+    dds::core::cond::StatusCondition status_condition(reader);
+    status_condition.enabled_statuses(
+            dds::core::status::StatusMask::requested_deadline_missed());
+
+    status_condition->handler([&reader]() {
+        dds::core::status::StatusMask status_mask = reader.status_changes();
+
+        if ((status_mask & dds::core::status::StatusMask::requested_deadline_missed()).any()) {
+            dds::core::status::RequestedDeadlineMissedStatus st =
+                    reader.requested_deadline_missed_status();
+            if (st.total_count_change() > 0) {
+
+                ProximityData the_key_holder;
+                reader.key_value(the_key_holder, st.last_instance_handle());
+                std::cout << "WARN: Missed deadline:\n"
+                          << "\tTopic = '" << reader.topic_description().name() << "'\n"
+                          << "\tInstance = " << the_key_holder.sensor_id()  
+                          << std::endl;
+            }
+        }
+
+    });
 
     // Create a ReadCondition for any data on this reader and associate a handler
     int count = 0;
@@ -59,6 +83,7 @@ int subscriber_main(int domain_id, int sample_count)
     // Create a WaitSet and attach the ReadCondition
     dds::core::cond::WaitSet waitset;
     waitset += read_condition;
+    waitset += status_condition;
 
     while (count < sample_count || sample_count == 0) {
         // Dispatch will call the handlers associated to the WaitSet conditions

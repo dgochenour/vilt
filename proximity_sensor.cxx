@@ -17,7 +17,7 @@ void publisher_main(int domain_id, int sample_count)
     // Create a DomainParticipant with default Qos
     dds::domain::DomainParticipant participant(
             domain_id,
-            qos_provider.participant_qos("ProximityDatatype_Library::ProximityDatatype_Profile"));
+            qos_provider.participant_qos("System_Library::ParticipantBase"));
 
     // Create a Topic -- and automatically register the type
     dds::topic::Topic<ProximityData> topic (participant, PROXIMITY_DATA_TOPIC_NAME);
@@ -26,7 +26,7 @@ void publisher_main(int domain_id, int sample_count)
     dds::pub::DataWriter<ProximityData> writer(
             dds::pub::Publisher(participant), 
             topic,
-            qos_provider.datawriter_qos("ProximityDatatype_Library::ProximityDatatype_Profile"));
+            qos_provider.datawriter_qos("Data_Library::StreamingData"));
 
     ProximityData sample;
 

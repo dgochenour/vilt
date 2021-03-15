@@ -2,22 +2,8 @@
 <dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:noNamespaceSchemaLocation="http://community.rti.com/schema/6.0.1/rti_dds_qos_profiles.xsd">
 
-    <qos_library name="ProximityDatatype_Library">
-
-        <qos_profile name="ProximityDatatype_Profile" base_name="BuiltinQosLib::Generic.BestEffort">
-                
-            <datawriter_qos>
-                <publication_name>
-                    <name>OurProximityDatatypeDataWriter</name>
-                </publication_name>
-            </datawriter_qos>
-             
-            <datareader_qos>
-                <subscription_name>
-                    <name>OurProximityDatatypeDataReader</name>
-                </subscription_name>
-            </datareader_qos>
-
+    <qos_library name = "System_Library">
+        <qos_profile name = "ParticipantBase" base_name="BuiltinQosLib::Generic.BestEffort">
             <participant_qos>
                 <!--
                 The participant name, if it is set, will be displayed in the
@@ -25,12 +11,51 @@
                 application from another when you're debugging.
                 -->
                 <participant_name>
-                    <name>ProximityDatatypeParticipant</name>
-                    <role_name>ProximityDatatypeParticipantRole</role_name>
+                    <name>MyParticipant</name>
+                    <role_name>MyRole</role_name>
                 </participant_name>
+                <transport_builtin>
+                    <mask>UDPv4 | SHMEM</mask>
+                </transport_builtin>
+
 
             </participant_qos>
+        </qos_profile>
+    </qos_library>
 
+    <qos_library name="Data_Library">
+
+        <qos_profile name="StreamingData" base_name="BuiltinQosLib::Generic.BestEffort">
+                
+            <datawriter_qos>
+                <publication_name>
+                    <name>OurProximityDatatypeDataWriter</name>
+                </publication_name>
+                <deadline>
+                    <period>
+                        <sec>2</sec>
+                        <nanosec>0</nanosec>
+                    </period>
+                </deadline>                 
+            </datawriter_qos>
+             
+            <datareader_qos>
+                <subscription_name>
+                    <name>OurProximityDatatypeDataReader</name>
+                </subscription_name>
+                <deadline>
+                    <period>
+                        <sec>2</sec>
+                        <nanosec>0</nanosec>
+                    </period>
+                </deadline>
+                <time_based_filter>
+                    <minimum_separation>
+                        <sec>0</sec>
+                        <nanosec>500000000</nanosec>
+                    </minimum_separation>
+                </time_based_filter>                
+            </datareader_qos>
         </qos_profile>
 
     </qos_library>
