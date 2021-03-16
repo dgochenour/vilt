@@ -3,7 +3,7 @@
 /*
 WARNING: THIS FILE IS AUTO-GENERATED. DO NOT MODIFY.
 
-This file was generated from ProximityDatatype.idl using "rtiddsgen".
+This file was generated from DataTypeDefinitions.idl using "rtiddsgen".
 The rtiddsgen tool is part of the RTI Connext distribution.
 For more information, type 'rtiddsgen -help' at a command shell
 or consult the RTI Connext manual.
@@ -14,8 +14,8 @@ or consult the RTI Connext manual.
 
 #include "rti/topic/cdr/Serialization.hpp"
 
-#include "ProximityDatatype.hpp"
-#include "ProximityDatatypePlugin.hpp"
+#include "DataTypeDefinitions.hpp"
+#include "DataTypeDefinitionsPlugin.hpp"
 
 #include <rti/util/ostream_operators.hpp>
 

@@ -3,7 +3,7 @@
 /*
 WARNING: THIS FILE IS AUTO-GENERATED. DO NOT MODIFY.
 
-This file was generated from ProximityDatatype.idl using "rtiddsgen".
+This file was generated from DataTypeDefinitions.idl using "rtiddsgen".
 The rtiddsgen tool is part of the RTI Connext distribution.
 For more information, type 'rtiddsgen -help' at a command shell
 or consult the RTI Connext manual.
@@ -60,7 +60,7 @@ or consult the RTI Connext manual.
 
 #define RTI_CDR_CURRENT_SUBMODULE RTI_CDR_SUBMODULE_MASK_STREAM
 
-#include "ProximityDatatypePlugin.hpp"
+#include "DataTypeDefinitionsPlugin.hpp"
 
 /* ----------------------------------------------------------------------------
 *  Type ProximityData

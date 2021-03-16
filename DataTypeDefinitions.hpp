@@ -3,14 +3,14 @@
 /*
 WARNING: THIS FILE IS AUTO-GENERATED. DO NOT MODIFY.
 
-This file was generated from ProximityDatatype.idl using "rtiddsgen".
+This file was generated from DataTypeDefinitions.idl using "rtiddsgen".
 The rtiddsgen tool is part of the RTI Connext distribution.
 For more information, type 'rtiddsgen -help' at a command shell
 or consult the RTI Connext manual.
 */
 
-#ifndef ProximityDatatype_1543507062_hpp
-#define ProximityDatatype_1543507062_hpp
+#ifndef DataTypeDefinitions_1463587741_hpp
+#define DataTypeDefinitions_1463587741_hpp
 
 #include <iosfwd>
 
@@ -198,5 +198,5 @@ namespace rti {
 #define NDDSUSERDllExport
 #endif
 
-#endif // ProximityDatatype_1543507062_hpp
+#endif // DataTypeDefinitions_1463587741_hpp
 

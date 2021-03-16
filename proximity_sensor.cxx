@@ -7,7 +7,7 @@
 #include <dds/pub/ddspub.hpp>
 #include <rti/util/util.hpp> // for sleep()
 
-#include "ProximityDatatype.hpp"
+#include "DataTypeDefinitions.hpp"
 
 void publisher_main(int domain_id, int sample_count)
 {

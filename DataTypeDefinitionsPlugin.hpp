@@ -3,16 +3,16 @@
 /*
 WARNING: THIS FILE IS AUTO-GENERATED. DO NOT MODIFY.
 
-This file was generated from ProximityDatatype.idl using "rtiddsgen".
+This file was generated from DataTypeDefinitions.idl using "rtiddsgen".
 The rtiddsgen tool is part of the RTI Connext distribution.
 For more information, type 'rtiddsgen -help' at a command shell
 or consult the RTI Connext manual.
 */
 
-#ifndef ProximityDatatypePlugin_1543507062_h
-#define ProximityDatatypePlugin_1543507062_h
+#ifndef DataTypeDefinitionsPlugin_1463587741_h
+#define DataTypeDefinitionsPlugin_1463587741_h
 
-#include "ProximityDatatype.hpp"
+#include "DataTypeDefinitions.hpp"
 
 struct RTICdrStream;
 
@@ -250,5 +250,5 @@ ProximityDataPlugin_delete(struct PRESTypePlugin *);
 #define NDDSUSERDllExport
 #endif
 
-#endif /* ProximityDatatypePlugin_1543507062_h */
+#endif /* DataTypeDefinitionsPlugin_1463587741_h */
 

@@ -6,7 +6,7 @@
 #include <dds/core/ddscore.hpp>
 // Or simply include <dds/dds.hpp> 
 
-#include "ProximityDatatype.hpp"
+#include "DataTypeDefinitions.hpp"
 
 int process_data(dds::sub::DataReader<ProximityData>& reader)
 {
