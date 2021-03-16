@@ -30,7 +30,7 @@ void publisher_main(int domain_id, int sample_count)
 
     ProximityData sample;
 
-    sample.sensor_id("Sensor1234");
+    sample.device_id("Sensor1234");
     float sensor_proximity = 150;
     float proximity_step = 1;
 
