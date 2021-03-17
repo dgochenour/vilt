@@ -8,7 +8,7 @@
 
 #include "DataTypeDefinitions.hpp"
 
-int process_data(dds::sub::DataReader<ProximityData>& reader)
+int ProximityData_process_data(dds::sub::DataReader<ProximityData>& reader)
 {
     // Take all samples
     int count = 0;
@@ -26,6 +26,21 @@ int process_data(dds::sub::DataReader<ProximityData>& reader)
     return count; 
 } // The LoanedSamples destructor returns the loan
 
+int DeviceStatus_process_data(dds::sub::DataReader<DeviceStatus>& reader) {
+    // Take all samples
+    int count = 0;
+    dds::sub::LoanedSamples<DeviceStatus> samples = reader.take();
+    for (const auto& sample : samples) {
+        if (sample.info().valid()) {
+            count++;
+            std::cout << sample << std::endl;
+        }
+    }
+
+    return count; 
+
+}
+
 int subscriber_main(int domain_id, int sample_count)
 {
     // because we are using USER_QOS_PROFILE.xml, this default works
@@ -34,34 +49,35 @@ int subscriber_main(int domain_id, int sample_count)
     // Create a DomainParticipant with default Qos
     dds::domain::DomainParticipant participant(
             domain_id,
-            qos_provider.participant_qos("System_Library::ParticipantBase"));
+            qos_provider.participant_qos(SYSTEM_QOS_LIBRARY_NAME + "::" + PARTICIPANT_BASE_QOS_PROFILE_NAME));
 
     // Create a Topic -- and automatically register the type
-    dds::topic::Topic<ProximityData> topic(participant, PROXIMITY_DATA_TOPIC_NAME);
+    dds::topic::Topic<ProximityData> ProximityData_topic(participant, PROXIMITY_DATA_TOPIC_NAME);
 
+    dds::sub::Subscriber subscriber(participant);
     // Create a DataReader with default Qos (Subscriber created in-line)
-    dds::sub::DataReader<ProximityData> reader(
-            dds::sub::Subscriber(participant), 
-            topic,
-            qos_provider.datareader_qos("Data_Library::StreamingData"));
+    dds::sub::DataReader<ProximityData> ProximityData_reader(
+            subscriber, 
+            ProximityData_topic,
+            qos_provider.datareader_qos(DATA_QOS_LIBRARY_NAME + "::" + STREAMING_DATA_QOS_PROFILE_NAME));
 
     // get the readers StatusCondition
-    dds::core::cond::StatusCondition status_condition(reader);
+    dds::core::cond::StatusCondition status_condition(ProximityData_reader);
     status_condition.enabled_statuses(
             dds::core::status::StatusMask::requested_deadline_missed());
 
-    status_condition->handler([&reader]() {
-        dds::core::status::StatusMask status_mask = reader.status_changes();
+    status_condition->handler([&ProximityData_reader]() {
+        dds::core::status::StatusMask status_mask = ProximityData_reader.status_changes();
 
         if ((status_mask & dds::core::status::StatusMask::requested_deadline_missed()).any()) {
             dds::core::status::RequestedDeadlineMissedStatus st =
-                    reader.requested_deadline_missed_status();
+                    ProximityData_reader.requested_deadline_missed_status();
             if (st.total_count_change() > 0) {
 
                 ProximityData the_key_holder;
-                reader.key_value(the_key_holder, st.last_instance_handle());
+                ProximityData_reader.key_value(the_key_holder, st.last_instance_handle());
                 std::cout << "WARN: Missed deadline:\n"
-                          << "\tTopic = '" << reader.topic_description().name() << "'\n"
+                          << "\tTopic = '" << ProximityData_reader.topic_description().name() << "'\n"
                           << "\tInstance = " << the_key_holder.device_id()  
                           << std::endl;
             }
@@ -71,19 +87,38 @@ int subscriber_main(int domain_id, int sample_count)
 
     // Create a ReadCondition for any data on this reader and associate a handler
     int count = 0;
-    dds::sub::cond::ReadCondition read_condition(
-        reader,
+    dds::sub::cond::ReadCondition ProximityData_read_condition(
+        ProximityData_reader,
         dds::sub::status::DataState::any(),
-        [&reader, &count](/* dds::core::cond::Condition condition */)
+        [&ProximityData_reader, &count](/* dds::core::cond::Condition condition */)
     {
-        count += process_data(reader);
+        count += ProximityData_process_data(ProximityData_reader);
+    }
+    );
+
+    // Create DeviceStatus topic
+    dds::topic::Topic<DeviceStatus> DeviceStatus_topic(participant, DEVICE_STATUS_TOPIC_NAME);
+    // Create DR for DeviceStatus topic
+    dds::sub::DataReader<DeviceStatus> DeviceStatus_reader(
+            subscriber, 
+            DeviceStatus_topic,
+            qos_provider.datareader_qos(DATA_QOS_LIBRARY_NAME + "::" + STATE_DATA_QOS_PROFILE_NAME));    
+
+    dds::sub::cond::ReadCondition DeviceStatus_read_condition(
+        DeviceStatus_reader,
+        dds::sub::status::DataState::any(),
+        [&DeviceStatus_reader, &count](/* dds::core::cond::Condition condition */)
+    {
+        count += DeviceStatus_process_data(DeviceStatus_reader);
     }
     );
 
     // Create a WaitSet and attach the ReadCondition
     dds::core::cond::WaitSet waitset;
-    waitset += read_condition;
+    waitset += ProximityData_read_condition;
     waitset += status_condition;
+    waitset += DeviceStatus_read_condition;
+    
 
     while (count < sample_count || sample_count == 0) {
         // Dispatch will call the handlers associated to the WaitSet conditions
