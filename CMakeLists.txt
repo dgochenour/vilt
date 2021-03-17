@@ -45,12 +45,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/objs/${TARGET_ARC
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/objs/${TARGET_ARCH})
 
 set(IDL_GEN_CXX
-    ${CMAKE_CURRENT_SOURCE_DIR}/ProximityDatatype.cxx
-    ${CMAKE_CURRENT_SOURCE_DIR}/ProximityDatatypePlugin.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/DataTypeDefinitions.cxx
+    ${CMAKE_CURRENT_SOURCE_DIR}/DataTypeDefinitionsPlugin.cxx
 )
 set(IDL_GEN_H
-    ${CMAKE_CURRENT_SOURCE_DIR}/ProximityDatatype.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/ProximityDatatypePlugin.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/DataTypeDefinitions.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/DataTypeDefinitionsPlugin.hpp
 )
 
 add_executable(proximity_sensor

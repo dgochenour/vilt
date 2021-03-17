@@ -6,7 +6,7 @@
 #include <dds/core/ddscore.hpp>
 // Or simply include <dds/dds.hpp> 
 
-#include "ProximityDatatype.hpp"
+#include "DataTypeDefinitions.hpp"
 
 int process_data(dds::sub::DataReader<ProximityData>& reader)
 {
@@ -17,7 +17,7 @@ int process_data(dds::sub::DataReader<ProximityData>& reader)
         if (sample.info().valid()) {
             count++;
             std::cout << "INFO: Received Data" << std::endl;
-            std::cout << "\tSensor ID = " << sample.data().sensor_id() << std::endl;
+            std::cout << "\tSensor ID = " << sample.data().device_id() << std::endl;
             std::cout << "\tProximity (m) = " << sample.data().proximity() << std::endl;
 
         }   
@@ -62,7 +62,7 @@ int subscriber_main(int domain_id, int sample_count)
                 reader.key_value(the_key_holder, st.last_instance_handle());
                 std::cout << "WARN: Missed deadline:\n"
                           << "\tTopic = '" << reader.topic_description().name() << "'\n"
-                          << "\tInstance = " << the_key_holder.sensor_id()  
+                          << "\tInstance = " << the_key_holder.device_id()  
                           << std::endl;
             }
         }

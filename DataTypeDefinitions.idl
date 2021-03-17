@@ -1,0 +1,68 @@
+// (c) 2021 Copyright, Real-Time Innovations, Inc.  All rights reserved.
+// No duplications, whole or partial, manual or electronic, may be made
+// without express written permission.  Any such copies, or revisions thereof,
+// must display this notice unaltered.
+// This code contains trade secrets of Real-Time Innovations, Inc.
+
+// System_Library QoS library
+const string SYSTEM_QOS_LIBRARY_NAME = "System_Library";
+const string PARTICIPANT_BASE_QOS_PROFILE_NAME = "ParticipantBase";
+
+// Data_Library QoS library
+const string DATA_QOS_LIBRARY_NAME = "Data_Library";
+const string STREAMING_DATA_QOS_PROFILE_NAME = "StreamingData";
+const string STATE_DATA_QOS_PROFILE_NAME = "StateData";
+
+// Topic names
+const string PROXIMITY_DATA_TOPIC_NAME = "Proximity Data";
+const string DEVICE_STATUS_TOPIC_NAME = "Device Status";
+
+// Type definitions
+const unsigned long DEVICE_ID_MAX_LENGTH = 16;
+const unsigned long INFORMATION_MAX_LENGTH = 256;
+
+//
+// User Types
+//
+
+struct ProximityData {
+    @key string<DEVICE_ID_MAX_LENGTH> device_id;
+    float proximity;
+};
+
+
+enum DeviceKind {
+    SENSOR,
+    ACTUATOR
+};
+
+enum SensorKind {
+    TEMPERATURE,
+    PROXIMITY,
+    PRESSURE
+};
+
+enum ActuatorKind {
+    BRAKE,
+    THROTTLE,
+    LIGHTS
+};
+
+union DeviceKindUnion switch (DeviceKind) {
+    case SENSOR:
+        SensorKind this_sensor;
+    case ACTUATOR:
+        ActuatorKind this_actuator;
+};
+
+enum DeviceStatusEnum {
+    ON,
+    OFF
+};
+
+struct DeviceStatus {
+    @key string<DEVICE_ID_MAX_LENGTH> device_id;
+    DeviceKindUnion device_kind;
+    DeviceStatusEnum device_status;
+    string<INFORMATION_MAX_LENGTH> information;
+};
