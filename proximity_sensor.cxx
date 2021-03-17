@@ -17,20 +17,38 @@ void publisher_main(int domain_id, int sample_count)
     // Create a DomainParticipant with default Qos
     dds::domain::DomainParticipant participant(
             domain_id,
-            qos_provider.participant_qos("System_Library::ParticipantBase"));
+            qos_provider.participant_qos(SYSTEM_QOS_LIBRARY_NAME + "::" + PARTICIPANT_BASE_QOS_PROFILE_NAME));
 
     // Create a Topic -- and automatically register the type
-    dds::topic::Topic<ProximityData> topic (participant, PROXIMITY_DATA_TOPIC_NAME);
+    dds::topic::Topic<ProximityData> ProximityData_topic (participant, PROXIMITY_DATA_TOPIC_NAME);
 
-    // Create a DataWriter with default Qos (Publisher created in-line)
-    dds::pub::DataWriter<ProximityData> writer(
-            dds::pub::Publisher(participant), 
-            topic,
-            qos_provider.datawriter_qos("Data_Library::StreamingData"));
+    // Create a DataWriter with default Qos
+    dds::pub::Publisher publisher(participant);
+    dds::pub::DataWriter<ProximityData> ProximityData_writer(
+            publisher, 
+            ProximityData_topic,
+            qos_provider.datawriter_qos(DATA_QOS_LIBRARY_NAME + "::" + STREAMING_DATA_QOS_PROFILE_NAME));
 
-    ProximityData sample;
+    // Create Device Status topic
+    dds::topic::Topic<DeviceStatus> DeviceStatus_topic (participant, DEVICE_STATUS_TOPIC_NAME);
+    // Create DW for Device Status Topic
+    dds::pub::DataWriter<DeviceStatus> DeviceStatus_writer(
+            publisher,
+            DeviceStatus_topic,
+            qos_provider.datawriter_qos(DATA_QOS_LIBRARY_NAME + "::" + STATE_DATA_QOS_PROFILE_NAME));            
 
-    sample.device_id("Sensor1234");
+    DeviceStatus DeviceStatus_sample;
+    DeviceStatus_sample.device_id("Sensor1234");
+    DeviceStatus_sample.device_kind()._d(DeviceKind::SENSOR);
+    DeviceStatus_sample.device_kind().this_sensor(SensorKind::PROXIMITY);
+    DeviceStatus_sample.device_status(DeviceStatusEnum::ON);
+    DeviceStatus_sample.information("?");
+
+    DeviceStatus_writer.write(DeviceStatus_sample);
+
+    ProximityData ProximityData_sample;
+
+    ProximityData_sample.device_id("Sensor1234");
     float sensor_proximity = 150;
     float proximity_step = 1;
 
@@ -40,11 +58,11 @@ void publisher_main(int domain_id, int sample_count)
         if (sensor_proximity == 0 || sensor_proximity == 300) {
             proximity_step *= -1;
         }
-        sample.proximity(sensor_proximity);
+        ProximityData_sample.proximity(sensor_proximity);
 
         std::cout << "Writing ProximityData, count " << count << std::endl;
 
-        writer.write(sample);
+        ProximityData_writer.write(ProximityData_sample);
         sensor_proximity += proximity_step;
 
         rti::util::sleep(dds::core::Duration(0, 100000000));

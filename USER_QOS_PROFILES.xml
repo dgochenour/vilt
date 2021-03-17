@@ -58,6 +58,8 @@
             </datareader_qos>
         </qos_profile>
 
+        <qos_profile name="StateData" base_name="BuiltinQosLib::Generic.KeepLastReliable.TransientLocal"/>
+        
     </qos_library>
 
 </dds>
