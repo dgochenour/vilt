@@ -9,8 +9,8 @@ For more information, type 'rtiddsgen -help' at a command shell
 or consult the RTI Connext manual.
 */
 
-#ifndef DataTypeDefinitions_1463588820_hpp
-#define DataTypeDefinitions_1463588820_hpp
+#ifndef DataTypeDefinitions_1463588922_hpp
+#define DataTypeDefinitions_1463588922_hpp
 
 #include <iosfwd>
 
@@ -371,6 +371,69 @@ inline void swap(DeviceStatus& a, DeviceStatus& b)  OMG_NOEXCEPT
 
 NDDSUSERDllExport std::ostream& operator<<(std::ostream& o, const DeviceStatus& sample);
 
+class NDDSUSERDllExport BrakeCommand {
+  public:
+    BrakeCommand();
+
+    BrakeCommand(
+        const std::string& device_id,
+        float brake_intensity);
+
+    #ifdef RTI_CXX11_RVALUE_REFERENCES
+    #ifndef RTI_CXX11_NO_IMPLICIT_MOVE_OPERATIONS
+    BrakeCommand (BrakeCommand&&) = default;
+    BrakeCommand& operator=(BrakeCommand&&) = default;
+    BrakeCommand& operator=(const BrakeCommand&) = default;
+    BrakeCommand(const BrakeCommand&) = default;
+    #else
+    BrakeCommand(BrakeCommand&& other_) OMG_NOEXCEPT;  
+    BrakeCommand& operator=(BrakeCommand&&  other_) OMG_NOEXCEPT;
+    #endif
+    #endif 
+
+    std::string& device_id() OMG_NOEXCEPT {
+        return m_device_id_;
+    }
+
+    const std::string& device_id() const OMG_NOEXCEPT {
+        return m_device_id_;
+    }
+
+    void device_id(const std::string& value) {
+        m_device_id_ = value;
+    }
+
+    float& brake_intensity() OMG_NOEXCEPT {
+        return m_brake_intensity_;
+    }
+
+    const float& brake_intensity() const OMG_NOEXCEPT {
+        return m_brake_intensity_;
+    }
+
+    void brake_intensity(float value) {
+        m_brake_intensity_ = value;
+    }
+
+    bool operator == (const BrakeCommand& other_) const;
+    bool operator != (const BrakeCommand& other_) const;
+
+    void swap(BrakeCommand& other_) OMG_NOEXCEPT ;
+
+  private:
+
+    std::string m_device_id_;
+    float m_brake_intensity_;
+
+};
+
+inline void swap(BrakeCommand& a, BrakeCommand& b)  OMG_NOEXCEPT 
+{
+    a.swap(b);
+}
+
+NDDSUSERDllExport std::ostream& operator<<(std::ostream& o, const BrakeCommand& sample);
+
 namespace rti {
     namespace flat {
         namespace topic {
@@ -488,6 +551,42 @@ namespace dds {
             ::rti::topic::TypePluginKind::STL;
         };
 
+        template<>
+        struct topic_type_name< BrakeCommand > {
+            NDDSUSERDllExport static std::string value() {
+                return "BrakeCommand";
+            }
+        };
+
+        template<>
+        struct is_topic_type< BrakeCommand > : public ::dds::core::true_type {};
+
+        template<>
+        struct topic_type_support< BrakeCommand > {
+            NDDSUSERDllExport 
+            static void register_type(
+                ::dds::domain::DomainParticipant& participant,
+                const std::string & type_name);
+
+            NDDSUSERDllExport 
+            static std::vector<char>& to_cdr_buffer(
+                std::vector<char>& buffer, 
+                const BrakeCommand& sample,
+                ::dds::core::policy::DataRepresentationId representation 
+                = ::dds::core::policy::DataRepresentation::auto_id());
+
+            NDDSUSERDllExport 
+            static void from_cdr_buffer(BrakeCommand& sample, const std::vector<char>& buffer);
+            NDDSUSERDllExport 
+            static void reset_sample(BrakeCommand& sample);
+
+            NDDSUSERDllExport 
+            static void allocate_sample(BrakeCommand& sample, int, int);
+
+            static const ::rti::topic::TypePluginKind::type type_plugin_kind = 
+            ::rti::topic::TypePluginKind::STL;
+        };
+
     }
 }
 
@@ -592,6 +691,20 @@ namespace rti {
             ::dds::core::xtypes::ExtensibilityKind::EXTENSIBLE;                
         };
 
+        #ifndef NDDS_STANDALONE_TYPE
+        template<>
+        struct dynamic_type< BrakeCommand > {
+            typedef ::dds::core::xtypes::StructType type;
+            NDDSUSERDllExport static const ::dds::core::xtypes::StructType& get();
+        };
+        #endif
+
+        template <>
+        struct extensibility< BrakeCommand > {
+            static const ::dds::core::xtypes::ExtensibilityKind::type kind =
+            ::dds::core::xtypes::ExtensibilityKind::EXTENSIBLE;                
+        };
+
     }
 }
 
@@ -602,5 +715,5 @@ namespace rti {
 #define NDDSUSERDllExport
 #endif
 
-#endif // DataTypeDefinitions_1463588820_hpp
+#endif // DataTypeDefinitions_1463588922_hpp
 

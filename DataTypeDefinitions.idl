@@ -66,3 +66,8 @@ struct DeviceStatus {
     DeviceStatusEnum device_status;
     string<INFORMATION_MAX_LENGTH> information;
 };
+
+struct BrakeCommand {
+    @key string<DEVICE_ID_MAX_LENGTH> device_id;
+    float brake_intensity;
+};
