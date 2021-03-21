@@ -9,8 +9,8 @@ For more information, type 'rtiddsgen -help' at a command shell
 or consult the RTI Connext manual.
 */
 
-#ifndef DataTypeDefinitions_1463588922_hpp
-#define DataTypeDefinitions_1463588922_hpp
+#ifndef DataTypeDefinitions_1463589030_hpp
+#define DataTypeDefinitions_1463589030_hpp
 
 #include <iosfwd>
 
@@ -66,9 +66,13 @@ static const std::string STREAMING_DATA_QOS_PROFILE_NAME = "StreamingData";
 
 static const std::string STATE_DATA_QOS_PROFILE_NAME = "StateData";
 
+static const std::string COMMAND_QOS_PROFILE_NAME = "Command";
+
 static const std::string PROXIMITY_DATA_TOPIC_NAME = "Proximity Data";
 
 static const std::string DEVICE_STATUS_TOPIC_NAME = "Device Status";
+
+static const std::string BRAKE_COMMAND_TOPIC_NAME = "Brake Command";
 
 static const uint32_t DEVICE_ID_MAX_LENGTH = 16;
 
@@ -715,5 +719,5 @@ namespace rti {
 #define NDDSUSERDllExport
 #endif
 
-#endif // DataTypeDefinitions_1463588922_hpp
+#endif // DataTypeDefinitions_1463589030_hpp
 

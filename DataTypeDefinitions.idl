@@ -12,10 +12,12 @@ const string PARTICIPANT_BASE_QOS_PROFILE_NAME = "ParticipantBase";
 const string DATA_QOS_LIBRARY_NAME = "Data_Library";
 const string STREAMING_DATA_QOS_PROFILE_NAME = "StreamingData";
 const string STATE_DATA_QOS_PROFILE_NAME = "StateData";
+const string COMMAND_QOS_PROFILE_NAME = "Command";
 
 // Topic names
 const string PROXIMITY_DATA_TOPIC_NAME = "Proximity Data";
 const string DEVICE_STATUS_TOPIC_NAME = "Device Status";
+const string BRAKE_COMMAND_TOPIC_NAME = "Brake Command";
 
 // Type definitions
 const unsigned long DEVICE_ID_MAX_LENGTH = 16;

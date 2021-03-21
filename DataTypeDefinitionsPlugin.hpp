@@ -9,8 +9,8 @@ For more information, type 'rtiddsgen -help' at a command shell
 or consult the RTI Connext manual.
 */
 
-#ifndef DataTypeDefinitionsPlugin_1463588922_h
-#define DataTypeDefinitionsPlugin_1463588922_h
+#ifndef DataTypeDefinitionsPlugin_1463589030_h
+#define DataTypeDefinitionsPlugin_1463589030_h
 
 #include "DataTypeDefinitions.hpp"
 
@@ -982,5 +982,5 @@ BrakeCommandPlugin_delete(struct PRESTypePlugin *);
 #define NDDSUSERDllExport
 #endif
 
-#endif /* DataTypeDefinitionsPlugin_1463588922_h */
+#endif /* DataTypeDefinitionsPlugin_1463589030_h */
 
