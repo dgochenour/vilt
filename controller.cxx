@@ -2,25 +2,79 @@
 #include <algorithm>
 #include <iostream>
 
-#include <dds/sub/ddssub.hpp>
-#include <dds/core/ddscore.hpp>
-// Or simply include <dds/dds.hpp> 
+// #include <dds/sub/ddssub.hpp>
+// #include <dds/core/ddscore.hpp>
+#include <dds/dds.hpp> 
 
 #include "DataTypeDefinitions.hpp"
 
-int ProximityData_process_data(dds::sub::DataReader<ProximityData>& reader)
+bool check_if_command_needs_to_be_sent(
+        float received_proximity,
+        float previously_received_proximity) {
+
+    bool send_brake_command_sample = false;
+
+    if (
+        ((50 < previously_received_proximity && previously_received_proximity <= 100) &&
+        (50 < received_proximity && received_proximity <= 100)) ||
+        ((0 <= previously_received_proximity && previously_received_proximity <= 50) &&
+        (0 <= received_proximity && received_proximity <= 50)) ||
+        ((100 < previously_received_proximity) &&
+        (100 < received_proximity))) {
+
+        send_brake_command_sample = false;
+
+    } else {
+        send_brake_command_sample = true;
+    }
+    return send_brake_command_sample;
+}
+
+
+int ProximityData_process_data(
+        dds::sub::DataReader<ProximityData>& ProximityData_reader,
+        dds::pub::DataWriter<BrakeCommand>& BrakeCommand_writer,
+        float *previously_received_proximity)
 {
     // Take all samples
     int count = 0;
-    dds::sub::LoanedSamples<ProximityData> samples = reader.take();
+    dds::sub::LoanedSamples<ProximityData> samples = ProximityData_reader.take();
     for (const auto& sample : samples) {
         if (sample.info().valid()) {
             count++;
-            std::cout << "INFO: Received Data" << std::endl;
-            std::cout << "\tSensor ID = " << sample.data().device_id() << std::endl;
-            std::cout << "\tProximity (m) = " << sample.data().proximity() << std::endl;
 
-        }   
+            auto device_id = sample.data().device_id();
+            auto proximity = sample.data().proximity();
+
+            std::cout << "INFO: Received data" << std::endl;
+            std::cout << "\tSensor ID = " << device_id << std::endl;
+            std::cout << "\tProximity (m) = " << proximity << std::endl << std::endl;
+
+            // Decide if we need to send a sample depending on if the brake intensity needs to be updated
+            bool send_brake_command_sample = check_if_command_needs_to_be_sent(
+                    proximity,
+                    *previously_received_proximity);
+
+            BrakeCommand BrakeCommand_sample;
+            BrakeCommand_sample.device_id(sample.data().device_id());
+            if (send_brake_command_sample == true) {
+
+                if (proximity > 100) {
+                    BrakeCommand_sample.brake_intensity(0);
+
+                } else if (50 < proximity && proximity <= 100) {
+                    BrakeCommand_sample.brake_intensity(50);
+
+                } else {
+                    BrakeCommand_sample.brake_intensity(100);
+                }
+
+                BrakeCommand_writer.write(BrakeCommand_sample);
+
+                *previously_received_proximity = proximity;
+            }
+        }
+ 
     }
 
     return count; 
@@ -50,6 +104,14 @@ int subscriber_main(int domain_id, int sample_count)
     dds::domain::DomainParticipant participant(
             domain_id,
             qos_provider.participant_qos(SYSTEM_QOS_LIBRARY_NAME + "::" + PARTICIPANT_BASE_QOS_PROFILE_NAME));
+
+    // BrakeCommand specifics
+    dds::topic::Topic<BrakeCommand> BrakeCommand_topic (participant, BRAKE_COMMAND_TOPIC_NAME);
+
+    dds::pub::DataWriter<BrakeCommand> BrakeCommand_writer(
+            dds::pub::Publisher(participant),
+            BrakeCommand_topic,
+            qos_provider.datawriter_qos(DATA_QOS_LIBRARY_NAME + "::" + COMMAND_QOS_PROFILE_NAME));
 
     // Create a Topic -- and automatically register the type
     dds::topic::Topic<ProximityData> ProximityData_topic(participant, PROXIMITY_DATA_TOPIC_NAME);
@@ -87,12 +149,13 @@ int subscriber_main(int domain_id, int sample_count)
 
     // Create a ReadCondition for any data on this reader and associate a handler
     int count = 0;
+    float previously_received_proximity = 1000.0;
     dds::sub::cond::ReadCondition ProximityData_read_condition(
         ProximityData_reader,
         dds::sub::status::DataState::any(),
-        [&ProximityData_reader, &count](/* dds::core::cond::Condition condition */)
+        [&ProximityData_reader, &BrakeCommand_writer, &previously_received_proximity, &count]()
     {
-        count += ProximityData_process_data(ProximityData_reader);
+        count += ProximityData_process_data(ProximityData_reader, BrakeCommand_writer, &previously_received_proximity);
     }
     );
 
