@@ -56,7 +56,7 @@ int ProximityData_process_data(
                     *previously_received_proximity);
 
             BrakeCommand BrakeCommand_sample;
-            BrakeCommand_sample.device_id(sample.data().device_id());
+            BrakeCommand_sample.device_id("Actuator1234");
             if (send_brake_command_sample == true) {
 
                 if (proximity > 100) {

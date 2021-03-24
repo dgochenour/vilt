@@ -67,3 +67,9 @@ add_executable(controller
 )
 target_link_libraries(controller ${CONNEXT_PRO_LIBS} ${SYSLIBS})
 
+add_executable(brake
+    ${CMAKE_CURRENT_SOURCE_DIR}/brake.cxx
+    ${IDL_GEN_CXX}
+    ${IDL_GEN_H}
+)
+target_link_libraries(brake ${CONNEXT_PRO_LIBS} ${SYSLIBS})
